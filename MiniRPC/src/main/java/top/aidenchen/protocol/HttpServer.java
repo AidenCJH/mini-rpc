@@ -20,10 +20,10 @@ public class HttpServer {
 
 
     public void start(String hostAddress, Integer port) {
-        Logger.getLogger("").setLevel(Level.SEVERE);
-        ConsoleHandler handler = new ConsoleHandler();
-        handler.setLevel(Level.SEVERE);
-        Logger.getLogger("").addHandler(handler);
+//        Logger.getLogger("").setLevel(Level.SEVERE);
+//        ConsoleHandler handler = new ConsoleHandler();
+//        handler.setLevel(Level.SEVERE);
+//        Logger.getLogger("").addHandler(handler);
 
         Tomcat tomcat = new Tomcat();
         Server server = tomcat.getServer();

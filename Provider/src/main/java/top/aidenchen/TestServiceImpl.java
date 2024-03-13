@@ -12,4 +12,9 @@ public class TestServiceImpl implements TestService {
         return "hello: " + name;
     }
 
+    @Override
+    public Integer add(int a, int b) {
+        return a + b;
+    }
+
 }

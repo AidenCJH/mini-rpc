@@ -6,6 +6,7 @@ import top.aidenchen.common.URL;
 import top.aidenchen.loadbalance.LoadBalance;
 import top.aidenchen.properties.PropertiesReader;
 import top.aidenchen.protocol.HttpClient;
+import top.aidenchen.remote.netty.client.NettyClient;
 import top.aidenchen.utils.JedisUtils;
 
 import java.lang.reflect.InvocationHandler;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 
 public class ProxyFactory {
+    public static volatile Object result;
+
     public static <T> T getProxy(Class interfaceClass) {
         Object proxyInstance = Proxy.newProxyInstance(interfaceClass.getClassLoader(), new Class[]{interfaceClass}, new InvocationHandler() {
             @Override
@@ -23,7 +26,6 @@ public class ProxyFactory {
                 Invocation invocation = new Invocation(interfaceClass.getName(),
                         method.getName(), method.getParameterTypes(),
                         args);
-                HttpClient httpClient = new HttpClient();
                 String sign = PropertiesReader.get("redis_sign");
                 Set<String> keys = JedisUtils.keys(sign + ":" + interfaceClass.getName() + "*");
                 if (keys.isEmpty()) {
@@ -36,13 +38,13 @@ public class ProxyFactory {
                     servers.add(url);
                 }
                 URL url = LoadBalance.loadbalance(servers);
-                String result = "";
                 boolean success = false;
                 int retry_num = Integer.parseInt(PropertiesReader.get("client_retry_num"));
                 while (retry_num > 0) {
                     retry_num--;
                     try {
-                        result = httpClient.send(url.getHostAddress(), url.getPort(), invocation);
+                        result = null;
+                        NettyClient.run(url.getHostAddress(), url.getPort(), invocation);
                         success = true;
                         break;
                     } catch (Exception e) {
@@ -56,7 +58,7 @@ public class ProxyFactory {
                 if (!success) {
                     throw new RuntimeException("没有可调用的远程方法!");
                 }
-                return JSON.parseObject(result, method.getReturnType());
+                return result;
             }
         });
         return (T) proxyInstance;

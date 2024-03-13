@@ -1,10 +1,22 @@
 package top.aidenchen.common;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class Invocation implements Serializable {
     private String interfaceName;
     private String methodName;
+
+    @Override
+    public String toString() {
+        return "Invocation{" +
+                "interfaceName='" + interfaceName + '\'' +
+                ", methodName='" + methodName + '\'' +
+                ", parameterTypes=" + Arrays.toString(parameterTypes) +
+                ", parameters=" + Arrays.toString(parameters) +
+                '}';
+    }
+
     private Class[] parameterTypes;
     private Object[] parameters;
 

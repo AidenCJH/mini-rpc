@@ -3,6 +3,7 @@ package top.aidenchen;
 import top.aidenchen.properties.PropertiesReader;
 import top.aidenchen.protocol.HttpServer;
 import top.aidenchen.register.LocalRegister;
+import top.aidenchen.remote.netty.server.NettyServer;
 import top.aidenchen.utils.JedisUtils;
 
 import java.io.IOException;
@@ -72,8 +73,8 @@ public class Bootstrap {
         myThread.setWeight(Math.toIntExact(weight));
         myThread.start();
         System.out.println("启动服务!" + "IP:" + hostAddress + " 端口:" + port + " 权重:" + weight);
-        HttpServer httpServer = new HttpServer();
-        httpServer.start(hostAddress, port);
+        NettyServer nettyServer = new NettyServer(port);
+        nettyServer.run();
     }
 
     public static void start(Long weight) {

@@ -16,9 +16,13 @@ public class JedisUtils {
      * 初始化Redis连接
      */
     static {
-        jedis = new Jedis(PropertiesReader.get("redis_host"), Integer.parseInt(PropertiesReader.get("redis_port")));
-        if (Objects.equals(PropertiesReader.get("redis_requirePass"), "True")) {
-            jedis.auth(PropertiesReader.get("redis_password"));
+        try {
+            jedis = new Jedis(PropertiesReader.get("redis_host"), Integer.parseInt(PropertiesReader.get("redis_port")));
+            if (Objects.equals(PropertiesReader.get("redis_requirePass"), "true")) {
+                jedis.auth(PropertiesReader.get("redis_password"));
+            }
+        }catch (Exception e){
+            throw new RuntimeException("连接Redis失败");
         }
     }
 

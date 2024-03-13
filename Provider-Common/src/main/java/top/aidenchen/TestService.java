@@ -8,4 +8,6 @@ public interface TestService {
      * @return
      */
     public String sayHello(String name);
+
+    public Integer add(int a, int b);
 }
